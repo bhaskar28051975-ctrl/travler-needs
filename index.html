@@ -3,92 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Status - Traveler Needs</title>
+    <title>TRAVELER NEEDS - Master Hub</title>
     <style>
-        body { font-family: 'Times New Roman', serif; background: #f4f4f4; margin: 0; padding: 15px; }
-        .header { background: #1a237e; color: white; text-align: center; padding: 20px; margin: -15px -15px 20px -15px; border-bottom: 4px solid #ffd700; }
-        .hotel-card { max-width: 450px; margin: 0 auto 20px auto; background: white; border: 1px solid #ccc; border-radius: 4px; overflow: hidden; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
-        .hotel-img { width: 100%; height: 180px; object-fit: cover; }
-        .details { padding: 15px; }
-        h2 { margin: 0; color: #1a237e; cursor: pointer; text-transform: uppercase; font-size: 20px; }
-        .comm-tag { background: #fff9e6; color: #b7791f; padding: 8px; display: block; margin: 10px 0; font-weight: bold; border: 1px dashed #b7791f; text-align: center; }
-        .room-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .price { color: #2e7d32; font-size: 14px; font-weight: bold; }
-        select { padding: 5px; width: 60px; font-weight: bold; border: 1px solid #1a237e; }
-        .map-link { display: block; text-align: center; margin-top: 15px; color: #1a237e; text-decoration: none; font-weight: bold; font-size: 14px; }
+        body { font-family: 'Times New Roman', serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .header { background-color: #1a237e; color: white; padding: 40px 10px; text-align: center; border-bottom: 5px solid #ffd700; }
+        .header h1 { margin: 0; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; }
+        .container { max-width: 500px; margin: 20px auto; padding: 15px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .classic-btn { 
+            background: white; border: 2px solid #1a237e; padding: 20px; 
+            text-align: center; text-decoration: none; color: #1a237e; 
+            font-weight: bold; font-size: 18px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 3px 3px 0px #1a237e; transition: 0.2s;
+        }
+        .classic-btn:active { transform: translate(2px, 2px); box-shadow: none; }
+        .icon { margin-right: 15px; font-size: 24px; }
+        .footer { text-align: center; padding: 20px; font-size: 13px; color: #666; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>TRAVELER NEEDS</h1>
-    <p>Hotel Vacancy Portal</p>
-</div>
+    <div class="header">
+        <h1>TRAVELER NEEDS</h1>
+        <p>Reliable Services for Every Journey</p>
+    </div>
 
-<div id="hotel-list">
-    <p style="text-align:center;">Connecting to Database...</p>
-</div>
+    <div class="container">
+        <div class="menu-grid">
+            <a href="https://bhaskar28051975-ctrl.github.io/master-web-app/index.html?id=taxi4" class="classic-btn">
+                <span class="icon">🌐</span> MASTER WEB APP
+            </a>
+            <a href="https://bhaskar28051975-ctrl.github.io/taxi-commission/" class="classic-btn">
+                <span class="icon">🏨</span> HOTEL VACANCY
+            </a>
+            <a href="https://bhaskar28051975-ctrl.github.io/Fleet-list/" class="classic-btn">
+                <span class="icon">🚕</span> FLEET LIST
+            </a>
+            <a href="https://bhaskar28051975-ctrl.github.io/bhaskar-food-customer/control.html" class="classic-btn">
+                <span class="icon">🍽️</span> BHASKAR FOOD
+            </a>
+        </div>
+    </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyAGSjCk-GomMSZ6TNYP8n4JU2pcrPBv6Pg",
-        authDomain: "travler-needs.firebaseapp.com",
-        databaseURL: "https://travler-needs-default-rtdb.firebaseio.com",
-        projectId: "travler-needs"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    onValue(ref(db, 'hotels'), (snapshot) => {
-        const list = document.getElementById('hotel-list');
-        list.innerHTML = "";
-        const hotels = snapshot.val();
-
-        for (let id in hotels) {
-            const h = hotels[id];
-            const card = document.createElement('div');
-            card.className = 'hotel-card';
-            card.innerHTML = `
-                <img src="${h.img || 'https://via.placeholder.com/400x200'}" class="hotel-img">
-                <div class="details">
-                    <h2 ondblclick="managerAction('${id}')">${h.name}</h2>
-                    <span class="comm-tag">🚖 TAXI COMMISSION: ₹${h.commission}</span>
-                    <div class="room-row">
-                        <div>A/C Rooms<br><span class="price">Starts @ ₹${h.acPrice}</span></div>
-                        <select id="ac-${id}" disabled>${genOptions(h.acRooms)}</select>
-                    </div>
-                    <div class="room-row">
-                        <div>Non A/C Rooms<br><span class="price">Starts @ ₹${h.nacPrice}</span></div>
-                        <select id="nac-${id}" disabled>${genOptions(h.nacRooms)}</select>
-                    </div>
-                    <a href="${h.mapUrl}" target="_blank" class="map-link">📍 OPEN MAP LOCATION</a>
-                </div>
-            `;
-            list.appendChild(card);
-        }
-    });
-
-    function genOptions(sel) {
-        let html = "";
-        for(let i=0; i<=20; i++) html += `<option value="${i}" ${i==sel?'selected':''}>${i}</option>`;
-        return html;
-    }
-
-    window.managerAction = async (id) => {
-        const pass = prompt("Manager Code for " + id + ":");
-        const snap = await get(ref(db, `hotels/${id}/password`));
-        if(pass === snap.val()) {
-            document.getElementById(`ac-${id}`).disabled = false;
-            document.getElementById(`nac-${id}`).disabled = false;
-            document.getElementById(`ac-${id}`).onchange = (e) => update(ref(db, `hotels/${id}`), { acRooms: e.target.value });
-            document.getElementById(`nac-${id}`).onchange = (e) => update(ref(db, `hotels/${id}`), { nacRooms: e.target.value });
-            alert("Editing Unlocked for " + id);
-        } else { alert("Access Denied"); }
-    };
-</script>
+    <div class="footer">© 2026 TRAVELER NEEDS | BHASKAR ENTERPRISES</div>
 </body>
 </html>
