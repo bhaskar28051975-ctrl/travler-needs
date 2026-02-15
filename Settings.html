@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traveler Needs - Admin</title>
+    <style>
+        body { font-family: sans-serif; background: #eef2f7; padding: 20px; }
+        .admin-box { max-width: 400px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid #1a237e; color: #1a237e; padding-bottom: 10px; }
+        label { display: block; margin-top: 12px; font-weight: bold; font-size: 13px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; }
+        button { width: 100%; padding: 12px; background: #1a237e; color: white; border: none; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0d1440; }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h2>Manage Hotels</h2>
+    <input type="text" id="hName" placeholder="Hotel Name">
+    <input type="text" id="hImg" placeholder="Image URL (Unsplash/Direct Link)">
+    <input type="number" id="hComm" placeholder="Taxi Commission (₹)">
+    <input type="number" id="hAcP" placeholder="A/C Start Price">
+    <input type="number" id="hNacP" placeholder="Non-A/C Start Price">
+    <input type="text" id="hMap" placeholder="Google Maps URL">
+    <input type="password" id="hPass" placeholder="Manager Password">
+    
+    <button id="saveBtn">Add / Update Hotel</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAGSjCk-GomMSZ6TNYP8n4JU2pcrPBv6Pg",
+        authDomain: "travler-needs.firebaseapp.com",
+        databaseURL: "https://travler-needs-default-rtdb.firebaseio.com",
+        projectId: "travler-needs"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.getElementById('saveBtn').onclick = () => {
+        const name = document.getElementById('hName').value;
+        const id = name.replace(/\s+/g, '-').toLowerCase();
+        
+        set(ref(db, 'hotels/' + id), {
+            name: name,
+            img: document.getElementById('hImg').value,
+            commission: document.getElementById('hComm').value,
+            acPrice: document.getElementById('hAcP').value,
+            nacPrice: document.getElementById('hNacP').value,
+            mapUrl: document.getElementById('hMap').value,
+            password: document.getElementById('hPass').value,
+            acRooms: 20,
+            nacRooms: 20
+        }).then(() => alert("Hotel added to Traveler Needs index!"));
+    };
+</script>
+</body>
+</html>
